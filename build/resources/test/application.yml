@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+    hikari:
+      pool-name: HikariCP
+      connection-timeout: 300000
+      maximum-pool-size: 10
+      max-lifetime: 1800000
+      read-only: false
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        jdbc:
+          batch_size: 1000
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: h2
+    open-in-view: false
+
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
