@@ -1,26 +1,24 @@
 package com.hermes.hermestock.service;
 
 import com.hermes.hermestock.domain.Channel;
-import com.hermes.hermestock.domain.Stock;
-import com.hermes.hermestock.repository.ChannelRepository;
+import com.hermes.hermestock.domain.TradeLog;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.openqa.selenium.json.Json;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
-
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -123,23 +121,23 @@ public class MessageService {
 
     private String queryUrl = "<https://finance.naver.com/item/main.naver?code=";
 
-    private StringBuilder makeUrl(List<Stock> stocks){
+    private StringBuilder makeUrl(List<TradeLog> tradeLogs){
         StringBuilder stockContents = new StringBuilder();
-        for (Stock stock : stocks) {
+        for (TradeLog tradeLog : tradeLogs) {
             stockContents.append(this.queryUrl);
-            stockContents.append(Long.parseLong(stock.getCode()));
+            stockContents.append(tradeLog.getCode());
             stockContents.append("|");
-            stockContents.append(stock.getName());
+            stockContents.append(tradeLog.getName());
             stockContents.append("> : ");
-            NumberFormat numberFormat = NumberFormat.getInstance();
-            stockContents.append(numberFormat.format(Long.parseLong(stock.getPbpayment())));
+            DecimalFormat decFormat = new DecimalFormat("###,###");
+            stockContents.append(decFormat.format(tradeLog.getPbpayment()));
             stockContents.append("\\n");
 
         }
         return stockContents;
     }
 
-    public StringBuilder makeContents(List<Stock> stocks_k, List<Stock> stocks_f, int order){
+    public StringBuilder makeContents(List<TradeLog> stocks_k, List<TradeLog> stocks_f, int order){
         StringBuilder message = new StringBuilder();
         if(order <2 ) {
             message.append(this.message_intro_kospi);
@@ -147,7 +145,7 @@ public class MessageService {
             message.append(this.message_intro_kosdaq);
         }
         message.append(this.makeUrl(stocks_k)).append(this.message_body).append(this.makeUrl(stocks_f)).append(this.message_foot);
-        System.out.println("메세지\n" + message);
+        log.info(String.valueOf(message));
         return message;
     }
 
@@ -164,10 +162,24 @@ public class MessageService {
         HttpEntity<String> entity = new HttpEntity<String>(jsonStr , headers);
         RestTemplate restTemplate = new RestTemplate();
         List<Channel> channelList = channelService.findChannelList();
+        int result = 0;
         for(Channel channel : channelList ){
-            restTemplate.postForObject(channel.getUrl(), entity, String.class);
+            try {
+                restTemplate.postForObject(channel.getUrl(), entity, String.class);
+                //restTemplate.postForObject(channelList.get(0).getUrl(), entity, String.class); //rex channel test
+            }catch (Exception e){
+                HttpEntity<String> entity_e = new HttpEntity<String>(e.toString() , headers);
+                restTemplate.postForObject(channelList.get(0).getUrl(), entity_e, String.class);
+            }
+            result++;
+        }
+        String finalMessage = "{\"blocks\": [{\"type\": \"section\",\"text\":" +
+                "{\"type\": \"mrkdwn\"," +
+                "\"text\": \"Send to" + Integer.toString(channelList.size())  + "channels\" }}]}";
+        HttpEntity<String> entity_r = new HttpEntity<String>(finalMessage , headers);
+        if(result==channelList.size()) {
+            restTemplate.postForObject(channelList.get(0).getUrl(), entity_r, String.class);
         }
     }
-
 
 }

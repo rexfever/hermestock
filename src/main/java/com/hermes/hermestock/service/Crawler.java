@@ -39,7 +39,7 @@ public class Crawler {
     public void getCSVfiles() {
         Common common = new Common();
         String formatedNow = common.getDate();
-        //formatedNow = "20220203";
+        //formatedNow = "20220203"; //테스트용
 
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
