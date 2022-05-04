@@ -1,7 +1,7 @@
 package com.hermes.hermestock.service;
 
 import com.hermes.hermestock.domain.RateLog;
-import com.hermes.hermestock.repository.RateRepository;
+import com.hermes.hermestock.repository.RateLogRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 @Service
 public class RateLogService {
 
-    private final RateRepository rateRepository;
+    private final RateLogRepository rateRepository;
 
-    public RateLogService(RateRepository rateRepository) {
+    public RateLogService(RateLogRepository rateRepository) {
         this.rateRepository = rateRepository;
     }
 

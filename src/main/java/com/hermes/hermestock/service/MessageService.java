@@ -165,8 +165,11 @@ public class MessageService {
         int result = 0;
         for(Channel channel : channelList ){
             try {
-                restTemplate.postForObject(channel.getUrl(), entity, String.class);
-                //restTemplate.postForObject(channelList.get(0).getUrl(), entity, String.class); //rex channel test
+                if(common.isTest())
+                    restTemplate.postForObject(channelList.get(0).getUrl(), entity, String.class); //rex channel test
+                else
+                    restTemplate.postForObject(channel.getUrl(), entity, String.class);
+
             }catch (Exception e){
                 HttpEntity<String> entity_e = new HttpEntity<String>(e.toString() , headers);
                 restTemplate.postForObject(channelList.get(0).getUrl(), entity_e, String.class);
