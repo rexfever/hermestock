@@ -17,11 +17,11 @@ import java.util.List;
 @Service
 @Slf4j
 public class FileService {
-    private static String top5Path = System.getProperty("user.dir")+"/TOP5";
-    private static String conditionPath = System.getProperty("user.dir")+"/CONDITION";
-    public List<String> getFileList() {
-        String path = System.getProperty("user.home") + "/Downloads";
-        path = System.getProperty("user.dir");
+    public String originPath = System.getProperty("user.dir");
+    public String top5Path = originPath+"/TOP5";
+    public String conditionPath = originPath+"/CONDITION";
+
+    public List<String> getFileList(String path) {
         List<String> fileNames = new ArrayList<>();
         File[] files = new File(path).listFiles();
         String EXTENSIONS = ".csv";
@@ -52,8 +52,8 @@ public class FileService {
         return 0;
     }
 
-    public int deleteFiles(){
-        List<String> fileNames =  this.getFileList();
+    public int deleteFiles(String path){
+        List<String> fileNames =  this.getFileList(path);
         int result = fileNames.size();
         for(String filename : fileNames){
             System.out.println("Deleted filename = " + filename);
@@ -134,10 +134,13 @@ public class FileService {
 
             while ((line = br.readLine()) != null) { // readLine()은 파일에서 개행된 한 줄의 데이터를 읽어온다.
                 RateLog rateLog = new RateLog();
-                String[] values = line.split(","); // 파일의 한 줄을 ,로 나누어 배열에 저장 후 리스트로 변환한다.
+                String readLine = new String(line.getBytes("ISO-8859-1"),"EUC-KR");
+
+                String[] values = readLine.split(","); // 파일의 한 줄을 ,로 나누어 배열에 저장 후 리스트로 변환한다.
                 if(values[0].equals("종목코드")) continue; // 타이틀 라인인 경우 pass , 메세지의 start, next 에서 1 빼야 함
-                rateLog.setRateLog(values[0].replace("\"", ""), common.isPositive((int) Float.parseFloat(values[5].replace("\"", ""))), common.strToDate(today));
+                rateLog.setRateLog(values[0].replace("\"", ""), common.isPositive(values[4].replace("\"", "")), today);
                 rateLogs.add(rateLog);
+
             }
 
         } catch (IOException e) {
@@ -156,21 +159,23 @@ public class FileService {
     }
 
 
-    public String moveFile(String originFile, String targetFile) {
+    public String moveFile(String originFile, String originPath, String targetPath) {
 
         try{
 
             File file = new File(originFile);
-
+            String targetFile = originFile.replace(originPath, targetPath);
             if(file.renameTo(new File(targetFile))){ //파일 이동
-                return targetFile; //성공시 성공 파일 경로 return
+                System.out.println("Success");
+            return targetFile; //성공시 성공 파일 경로 return
             }else{
-                return null;
+                System.out.println("Fail");
+                return "Fail";
             }
 
         }catch(Exception e){
             e.printStackTrace();
-            return null;
+            return "Fail";
         }
 
     }

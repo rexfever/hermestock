@@ -18,10 +18,11 @@ public class RateLog {
     private boolean rate; //true : up, false :down
     private Date date;
 
-    public void setRateLog(String code, boolean rate, Date date){
+    public void setRateLog(String code, boolean rate, String date){
         Common common = new Common();
         this.code = code;
         this.rate = rate;
+        this.date = common.strToDate(date);
 
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -34,9 +35,18 @@ public class Common {
         return targetDate;
     }
 
-    public boolean isPositive(int num){
-        boolean result = num > 0? true : false;
+    public boolean isPositive(String value){
+        boolean result = value.indexOf("-") >= 0? true : false;
         return result;
+    }
+
+    public boolean isTest(){
+        boolean isTest = false;
+        LocalTime now = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
+        if(now.format(formatter) != "1545")
+            isTest = true;
+        return isTest;
     }
 
     public static void FindEncoding(String s)
