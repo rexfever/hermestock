@@ -44,7 +44,7 @@ public class Common {
         boolean isTest = false;
         LocalTime now = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-        if(now.format(formatter) != "1545")
+        if(now.format(formatter) != "1544" || now.format(formatter) != "1545" || now.format(formatter) != "1546")
             isTest = true;
         return isTest;
     }
