@@ -3,6 +3,7 @@ package com.hermes.hermestock.service;
 import com.hermes.hermestock.domain.RateLog;
 import com.hermes.hermestock.domain.TradeLog;
 import com.hermes.hermestock.repository.RateLogRepository;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -46,7 +49,16 @@ public class RateLogServiceTest {
 
     @Test
     public void 테스트여부() {
-        System.out.println(common.isTest());
+        boolean isTest = common.isTest();
+        int time = 0;
+        LocalTime now = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
+        time = Integer.parseInt(now.format(formatter));
+        if(time < 1540)
+            assertEquals(isTest, 1540 > time);
+        else if(time >1550)
+            assertEquals(isTest, 1550 < time);
+
     }
 
 }
