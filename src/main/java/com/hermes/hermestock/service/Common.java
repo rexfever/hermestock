@@ -45,8 +45,14 @@ public class Common {
         LocalTime now = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
         System.out.println("now.format(formatter) = " + now.format(formatter));
-        if(1540 < Integer.parseInt(now.format(formatter)) || Integer.parseInt(now.format(formatter)) > 1550 )
-            isTest = true;
+
+        if(now.format(formatter) != "1544")isTest = true;
+        if(now.format(formatter) != "1545")isTest = true;
+        if(now.format(formatter) != "1546")isTest = true;
+        if(now.format(formatter) != "1547")isTest = true;
+        if(now.format(formatter) != "1548")isTest = true;
+        if(now.format(formatter) != "1549")isTest = true;
+        if(now.format(formatter) != "1550")isTest = true;
         System.out.println("isTest = " + isTest);
         return isTest;
     }
