@@ -54,7 +54,7 @@ public class Common {
         if(now.format(formatter) != "1549")isTest = true;
         if(now.format(formatter) != "1550")isTest = true;
         System.out.println("isTest = " + isTest);
-        return isTest;
+        return isTest; 
     }
 
     public static void FindEncoding(String s)
