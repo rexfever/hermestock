@@ -38,7 +38,10 @@ public class ScheduledTasks {
 
         int fileCount = 0;
         String targetDate = common.getDate();
-        if(common.isTest()) targetDate = "20220228";
+        LocalTime now = LocalTime.now();
+
+        if(common.isTest(now)) targetDate = "20220228";
+        System.out.println("targetDate = " + targetDate);
         while(fileCount < 4) {
 
             fileService.deleteFiles(fileService.originPath);

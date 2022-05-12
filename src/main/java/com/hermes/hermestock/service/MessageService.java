@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 @Slf4j
@@ -156,7 +157,7 @@ public class MessageService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         String jsonStr=message.toString();//sb는 StringBuilder 객체. API의response를 통해 값을 받은 상태.
         JSONParser parser = new JSONParser();
-
+        LocalTime now = LocalTime.now();
         Object obj = parser.parse(jsonStr);
         JSONObject jsonObj = (JSONObject) obj;
         HttpEntity<String> entity = new HttpEntity<String>(jsonStr , headers);
@@ -165,7 +166,7 @@ public class MessageService {
         int result = 0;
         for(Channel channel : channelList ){
             try {
-                if(common.isTest())
+                if(common.isTest(now))
                     restTemplate.postForObject(channelList.get(0).getUrl(), entity, String.class); //rex channel test
                 else
                     restTemplate.postForObject(channel.getUrl(), entity, String.class);

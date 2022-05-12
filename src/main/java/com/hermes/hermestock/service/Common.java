@@ -40,23 +40,14 @@ public class Common {
         return result;
     }
 
-    public boolean isTest(){
-        boolean isTest = false;
-        LocalTime now = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-        System.out.println("now.format(formatter) = " + now.format(formatter));
-        if(now.format(formatter) != "1544")
-            isTest = true;
-        if(now.format(formatter) != "1545")
-            isTest = true;
-        if(now.format(formatter) != "1546")
-            isTest = true;
-        if(now.format(formatter) != "1547")
-            isTest = true;
-        if(now.format(formatter) != "1548")
-            isTest = true;
-        if(now.format(formatter) != "1549")
-            isTest = true;
+    public boolean isTest(LocalTime now){
+        boolean isTest = true;
+
+        LocalTime startTime = LocalTime.of(15,44,00);
+        LocalTime endTime = LocalTime.of(15,59,59);
+        System.out.println("now = " + now);
+        if(now.isAfter(startTime) && now.isBefore(endTime))
+            isTest = false;
 
         System.out.println("isTest = " + isTest);
         return isTest;
