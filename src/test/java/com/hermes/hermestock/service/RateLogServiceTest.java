@@ -49,15 +49,13 @@ public class RateLogServiceTest {
 
     @Test
     public void 테스트여부() {
-        boolean isTest = common.isTest();
-        int time = 0;
-        LocalTime now = LocalTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmm");
-        time = Integer.parseInt(now.format(formatter));
-        if(time < 1540)
-            assertEquals(isTest, 1540 > time);
-        else if(time >1550)
-            assertEquals(isTest, 1550 < time);
+        LocalTime testTime1 = LocalTime.of(9,00,00,00);
+        LocalTime runtime = LocalTime.of(15,45,00,00);
+        LocalTime testTime2 = LocalTime.of(22,00,00,00);
+        assertEquals(common.isTest(testTime1) , true);
+        assertEquals(common.isTest(runtime) , false);
+        assertEquals(common.isTest(testTime2) , true);
+
 
     }
 
