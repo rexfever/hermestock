@@ -43,7 +43,7 @@ public class Crawler {
 
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+        //options.addArguments("--headless");
         options.setCapability("ignoreProtectedModeSettings", true);
 
         driver = new ChromeDriver(options);

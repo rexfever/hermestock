@@ -32,8 +32,8 @@ public class ScheduledTasks {
         System.out.println(now); //
     }
 
-    //@Scheduled(fixedRate = 10000000)//테스트용
-    @Scheduled(cron="30 45 15 * * MON-FRI")
+    @Scheduled(fixedRate = 10000000)//테스트용
+    //@Scheduled(cron="30 45 15 * * MON-FRI")
     public int getTradeLogs(){
 
         int fileCount = 0;
@@ -45,6 +45,7 @@ public class ScheduledTasks {
         while(fileCount < 4) {
 
             fileService.deleteFiles(fileService.originPath);
+            fileService.deleteFiles(fileService.top5Path);
             crawlerService.getTop5Csv(targetDate);
             try {
                 Thread.sleep(10000L);

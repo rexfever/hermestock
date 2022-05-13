@@ -44,7 +44,7 @@ public class Common {
         boolean isTest = true;
 
         LocalTime startTime = LocalTime.of(15,44,00);
-        LocalTime endTime = LocalTime.of(15,59,59);
+        LocalTime endTime = LocalTime.of(16,59,59);
         System.out.println("now = " + now);
         if(now.isAfter(startTime) && now.isBefore(endTime))
             isTest = false;
