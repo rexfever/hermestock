@@ -50,10 +50,12 @@ public class RateLogServiceTest {
     @Test
     public void 테스트여부() {
         LocalTime testTime1 = LocalTime.of(9,00,00,00);
-        LocalTime runtime = LocalTime.of(15,45,00,00);
+        LocalTime runtime1 = LocalTime.of(15,45,00,00);
+        LocalTime runtime2 = LocalTime.of(15,49,59,00);
         LocalTime testTime2 = LocalTime.of(22,00,00,00);
         assertEquals(common.isTest(testTime1) , true);
-        assertEquals(common.isTest(runtime) , false);
+        assertEquals(common.isTest(runtime1) , false);
+        assertEquals(common.isTest(runtime2) , false);
         assertEquals(common.isTest(testTime2) , true);
 
 
