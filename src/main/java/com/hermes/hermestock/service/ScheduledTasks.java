@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = 100000)
     public void printTime(){
-        LocalTime now = LocalTime.now();
+        LocalDateTime now = LocalDateTime.now();
         System.out.println(now); //
     }
 
