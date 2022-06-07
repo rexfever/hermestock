@@ -1,16 +1,32 @@
 package com.hermes.hermestock.service;
 
+import com.hermes.hermestock.domain.RateLog;
+import com.hermes.hermestock.domain.TradeLog;
+import com.hermes.hermestock.repository.RateLogRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class Common {
+
+    FileService fileService = new FileService();
+    CrawlerService crawlerService = new CrawlerService();
+    TradeLogService tradeLogService;
+    RateLogService rateLogService;
+    private static final Logger log = LoggerFactory.getLogger(Common.class);
+
     public String getDate(){
         LocalDate now = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -103,5 +119,91 @@ public class Common {
             }
         }
     }
+
+    public void Top5DataMigration(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate eDate = LocalDate.now();
+        LocalDate sDate = eDate.minusMonths(6);
+        //Top5 정보 가져와서 저장
+        while(!sDate.equals(eDate.plusDays(1))){
+            if(!sDate.getDayOfWeek().equals(DayOfWeek.SATURDAY))
+                if (!sDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                    System.out.println(sDate + " " + sDate.getDayOfWeek() + " 파일 가져오기");
+                    this.getTop5Files4Mig(sDate.format(dtf).toString());
+
+                    System.out.println(sDate + " " + sDate.getDayOfWeek() + " DB 저장하기");
+                    this.saveTop5data();
+                }
+            sDate = sDate.plusDays(1);
+        }
+    }
+
+    public int getTop5Files4Mig(String targetDate){
+        int fileCount = 0;
+        while(fileCount < 4) {
+            fileService.deleteFiles(fileService.originPath);
+            fileService.deleteFiles(fileService.top5Path);
+            crawlerService.getTop5Csv(targetDate);
+            try {
+                Thread.sleep(10000L);
+            } catch(Exception ex){
+                log.info("ex = " + ex);
+            }
+            List<String> fileNames =  fileService.getFileList(fileService.originPath);
+            for(String name : fileNames){
+                fileService.moveFile(name, fileService.originPath, fileService.top5Path);
+            }
+            fileCount = fileNames.size();
+        }
+        return fileCount;
+    }
+
+    public void saveTop5data(){
+        List<TradeLog> tradeLogList = new ArrayList<>();
+        List<String> fileNames =  fileService.getFileList(fileService.top5Path);
+        int order = 0;
+        for(String name : fileNames){
+            List<TradeLog> tmpList = fileService.readFile(name,order);
+            tradeLogList.addAll(tmpList);
+            order++;
+        }
+        List<TradeLog> savedLogList = tradeLogService.saveAllLog(tradeLogList);
+    }
+
+    public void RateDataMigration(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate eDate = LocalDate.now();
+        LocalDate sDate = eDate.minusMonths(6);
+        //Top5 정보 가져와서 저장
+        while(!sDate.equals(eDate.plusDays(1))){
+            if(!sDate.getDayOfWeek().equals(DayOfWeek.SATURDAY))
+                if (!sDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
+                    this.getRateLog4Mig(sDate.format(dtf).toString());
+                }
+            sDate = sDate.plusDays(1);
+        }
+    }
+
+
+    public void getRateLog4Mig(String targetDate){
+
+        fileService.deleteFiles(fileService.originPath);
+        fileService.deleteFiles(fileService.conditionPath);
+        // 종목 시세 period 2: 1day period 3: 1M period 4: 6M
+        crawlerService.getStockConditionCsv(2, targetDate);
+        try {
+            Thread.sleep(10000L);
+        } catch(Exception ex){
+            log.info("ex = " + ex);
+        }
+        List<String> fileNames =  fileService.getFileList(fileService.originPath);
+        String fileName = fileService.moveFile(fileNames.get(0), fileService.originPath, fileService.conditionPath);
+        //<-여가까지 파일 가져와서 무브
+        List<RateLog> rateLogs = fileService.readFile(fileName, "");
+        List<RateLog> savedList = rateLogService.saveAllLog(rateLogs);
+        log.info("%d 개의 종목정보가 입력 되었습니다.", savedList.size());
+
+    }
+
 
 }

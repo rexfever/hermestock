@@ -33,8 +33,9 @@ public class CrawlerService {
     public CrawlerService() {
     }
     //그날의 주식 시세 가져오는 함수
-    public void getStockConditionCsv(int period){
+    public boolean getStockConditionCsv(int period, String formatedNow){
 
+        boolean result = true;
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
@@ -47,9 +48,17 @@ public class CrawlerService {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("cal-area")));
 
         //날짜 셋팅
-
-        element = driver.findElement(By.xpath("//*[@id=\"MDCSTAT016_FORM\"]/div[1]/div/table/tbody/tr[2]/td/div/div/button[" +period+ "]"));
-        element.click();
+        if(formatedNow.equals("")) {
+            element = driver.findElement(By.xpath("//*[@id=\"MDCSTAT016_FORM\"]/div[1]/div/table/tbody/tr[2]/td/div/div/button[" + period + "]"));
+            element.click();
+        }else {
+            element = driver.findElement(By.name("endDd"));
+            element.clear();
+            element.sendKeys(formatedNow);
+            element = driver.findElement(By.name("strtDd"));
+            element.clear();
+            element.sendKeys(formatedNow);
+        }
 
         //시장 선택
         element = driver.findElement(By.cssSelector("#MDCSTAT016_FORM > div.search_tb > div > table > tbody > tr:nth-child(1) > td > label:nth-child(2)"));
@@ -73,12 +82,14 @@ public class CrawlerService {
             selectElementCSVButton.click();
         }else{
             System.out.println("데이터가 없습니다.");
+            result = false;
         }
-
+        return result;
     }
 
-    public void getTop5Csv(String formatedNow) {
+    public boolean getTop5Csv(String formatedNow) {
 
+        boolean result = true;
         System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
@@ -117,10 +128,13 @@ public class CrawlerService {
                     selectElementCSVButton.click();
                 }else{
                     System.out.println("데이터가 없습니다.");
+                    result = false;
                     break;
                 }
             }
+            if(!result) break;
         }
+        return result;
     }
 
 }

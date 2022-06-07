@@ -166,9 +166,10 @@ public class MessageService {
         int result = 0;
         for(Channel channel : channelList ){
             try {
-                if(common.isTest(now))
+                if(common.isTest(now)) {
                     restTemplate.postForObject(channelList.get(0).getUrl(), entity, String.class); //rex channel test
-                else
+                    break;
+                }else
                     restTemplate.postForObject(channel.getUrl(), entity, String.class);
 
             }catch (Exception e){

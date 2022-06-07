@@ -9,7 +9,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +29,9 @@ public class ScheduledTasks {
     private final Common common;
     private final FileService fileService;
 
-    @Scheduled(fixedRate = 100000)
+
+
+    @Scheduled(fixedRate = 3600000)
     public void printTime(){
         LocalTime now = LocalTime.now();
         System.out.println(now); //
@@ -34,19 +39,18 @@ public class ScheduledTasks {
 
     //@Scheduled(fixedRate = 10000000)//테스트용
     @Scheduled(cron="30 45 15 * * MON-FRI")
-    public int getTradeLogs(){
+    public boolean getTradeLogs(){
 
         int fileCount = 0;
+        boolean result = true;
         String targetDate = common.getDate();
         LocalTime now = LocalTime.now();
 
         if(common.isTest(now)) targetDate = "20220228";
-        System.out.println("targetDate = " + targetDate);
         while(fileCount < 4) {
-
             fileService.deleteFiles(fileService.originPath);
             fileService.deleteFiles(fileService.top5Path);
-            crawlerService.getTop5Csv(targetDate);
+            result = crawlerService.getTop5Csv(targetDate);
             try {
                 Thread.sleep(10000L);
             } catch(Exception ex){
@@ -57,11 +61,9 @@ public class ScheduledTasks {
                 fileService.moveFile(name, fileService.originPath, fileService.top5Path);
             }
             fileCount = fileNames.size();
-            System.out.println("in while fileCount = " + fileCount);
         }
-        System.out.println("fileCount = " + fileCount);
         this.sendStockInfo();
-        return fileCount;
+        return result;
     }
     private void sendStockInfo(){
         List<TradeLog> tradeLogList = new ArrayList<>();
@@ -104,7 +106,8 @@ public class ScheduledTasks {
         fileService.deleteFiles(fileService.originPath);
         fileService.deleteFiles(fileService.conditionPath);
         // 종목 시세 period 2: 1day period 3: 1M
-        crawlerService.getStockConditionCsv(2);
+
+        boolean result = crawlerService.getStockConditionCsv(2 ,"");
         try {
             Thread.sleep(10000L);
         } catch(Exception ex){
@@ -114,13 +117,13 @@ public class ScheduledTasks {
         String fileName = fileService.moveFile(fileNames.get(0), fileService.originPath, fileService.conditionPath);
         //<-여가까지 파일 가져와서 무브
         int lines = saveRateLogs(fileName);
-        log.info("%d 개의 종목정보가 입력 되었습니다.", lines);
+        log.info("결과는 %b, %d 개의 종목정보가 입력 되었습니다.", result, lines);
 
     }
 
     public int saveRateLogs(String path){
         System.out.println("path = " + path);
-        List<RateLog> rateLogs = fileService.readFile(path);
+        List<RateLog> rateLogs = fileService.readFile(path, "");
         List<RateLog> savedList = rateLogService.saveAllLog(rateLogs);
         return savedList.size();
     }
@@ -134,5 +137,7 @@ public class ScheduledTasks {
         fileCount = fileCount +fileService.deleteFiles(fileService.conditionPath);
         log.info(fileCount+"개의 파일이 삭제되었습니다");
     }
+
+
 
 }

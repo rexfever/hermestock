@@ -31,7 +31,7 @@ public class RateLogServiceTest {
     @Test
     public void 로그저장테스트(){
         //given
-        cs.getStockConditionCsv(3);
+        cs.getStockConditionCsv(3, "");
         try {
             Thread.sleep(10000L);
         } catch(Exception ex){
@@ -39,7 +39,7 @@ public class RateLogServiceTest {
         }
         //when
         List<String> files = fs.getFileList(fs.originPath);
-        List<RateLog> rateLogs = fs.readFile(files.get(0));
+        List<RateLog> rateLogs = fs.readFile(files.get(0), "");
         List<RateLog> savedList = rateLogService.saveAllLog(rateLogs);
         //then
         fs.deleteFiles(fs.originPath);

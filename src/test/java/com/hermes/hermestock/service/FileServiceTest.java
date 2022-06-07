@@ -48,7 +48,7 @@ public class FileServiceTest {
         //크롤링 해서 다운 받은 파일을 목표 디렉토리로 이동하고 다운 받은 파일 수 와 이동한 파일수를 비교한다.
         //given
         fs.deleteFiles(fs.originPath);
-        cs.getStockConditionCsv(3);
+        cs.getStockConditionCsv(3, "");
         try {
             Thread.sleep(10000L);
         } catch(Exception ex){
