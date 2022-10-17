@@ -31,8 +31,7 @@ public class ScheduledTasks {
 
     @Scheduled(cron="0 00 15 * * *")
     public void updateWebDriver() {
-        System.out.println("Chrome Driver Version: " + System.getProperty("webdriver.chrome.driver"));
-        chromedriver().setup();
+        common.updateWebDriver();
     }
 
     @Scheduled(fixedRate = 100000)
