@@ -1,9 +1,7 @@
 package com.hermes.hermestock.service;
 
-
 import com.hermes.hermestock.domain.Buyer;
 import com.hermes.hermestock.domain.Market;
-import org.checkerframework.checker.units.qual.C;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,8 +13,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Crawler {
 
