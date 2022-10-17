@@ -2,6 +2,9 @@ package com.hermes.hermestock.service;
 
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -11,6 +14,7 @@ import java.util.Date;
 
 @Component
 public class Common {
+
     public String getDate(){
         LocalDate now = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");

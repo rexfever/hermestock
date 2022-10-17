@@ -14,6 +14,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.bonigarcia.wdm.WebDriverManager.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,11 @@ public class ScheduledTasks {
     private final CrawlerService crawlerService;
     private final Common common;
     private final FileService fileService;
+
+    @Scheduled(cron="0 00 15 * * *")
+    public void updateWebDriver() {
+        chromedriver().setup();
+    }
 
     @Scheduled(fixedRate = 100000)
     public void printTime(){

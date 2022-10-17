@@ -2,6 +2,7 @@ package com.hermes.hermestock.service;
 
 import com.hermes.hermestock.domain.Buyer;
 import com.hermes.hermestock.domain.Market;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,10 +13,6 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.util.Date;
-
 @Service
 public class CrawlerService {
     private WebDriver driver;
@@ -24,14 +21,15 @@ public class CrawlerService {
     private WebElement selectElement;
     private WebElement selectElementButton;
     private WebElement selectElementCSVButton;
+    private FileService fileService;
+
 
     private static String WEB_DRIVER_ID = "webdriver.chrome.driver";
-    private static Path path = FileSystems.getDefault().getPath("");
-    private static String directoryName = path.toAbsolutePath().toString();
-    private static String WEB_DRIVER_PATH = directoryName + "/chromedriver";
+    private static String WEB_DRIVER_PATH = System.getProperty(WEB_DRIVER_ID);
 
     public CrawlerService() {
     }
+
     //그날의 주식 시세 가져오는 함수
     public void getStockConditionCsv(int period){
 
