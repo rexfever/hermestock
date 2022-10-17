@@ -12,8 +12,16 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+import static io.github.bonigarcia.wdm.WebDriverManager.chromedriver;
+
 @Component
 public class Common {
+
+    public void updateWebDriver() {
+        chromedriver().setup();
+        System.out.println("Chrome Driver Version: " + System.getProperty("webdriver.chrome.driver"));
+
+    }
 
     public String getDate(){
         LocalDate now = LocalDate.now();

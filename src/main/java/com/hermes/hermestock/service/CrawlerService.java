@@ -24,16 +24,12 @@ public class CrawlerService {
     private FileService fileService;
 
 
-    private static String WEB_DRIVER_ID = "webdriver.chrome.driver";
-    private static String WEB_DRIVER_PATH = System.getProperty(WEB_DRIVER_ID);
-
     public CrawlerService() {
     }
 
     //그날의 주식 시세 가져오는 함수
     public void getStockConditionCsv(int period){
 
-        System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.setCapability("ignoreProtectedModeSettings", true);
@@ -77,7 +73,6 @@ public class CrawlerService {
 
     public void getTop5Csv(String formatedNow) {
 
-        System.setProperty(WEB_DRIVER_ID, WEB_DRIVER_PATH);
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");
         options.setCapability("ignoreProtectedModeSettings", true);
