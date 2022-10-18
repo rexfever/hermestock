@@ -40,8 +40,8 @@ public class ScheduledTasks {
         System.out.println(now); //
     }
 
-    @Scheduled(fixedRate = 10000000)//테스트용
-    //@Scheduled(cron="30 45 15 * * MON-FRI")
+    //@Scheduled(fixedRate = 10000000)//테스트용
+    @Scheduled(cron="30 45 15 * * MON-FRI")
     public int getTradeLogs(){
         common.updateWebDriver();
         int fileCount = 0;
