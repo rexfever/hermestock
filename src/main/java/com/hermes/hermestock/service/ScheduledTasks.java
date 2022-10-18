@@ -40,10 +40,10 @@ public class ScheduledTasks {
         System.out.println(now); //
     }
 
-    //@Scheduled(fixedRate = 10000000)//테스트용
-    @Scheduled(cron="30 45 15 * * MON-FRI")
+    @Scheduled(fixedRate = 10000000)//테스트용
+    //@Scheduled(cron="30 45 15 * * MON-FRI")
     public int getTradeLogs(){
-
+        common.updateWebDriver();
         int fileCount = 0;
         String targetDate = common.getDate();
         LocalTime now = LocalTime.now();
@@ -108,7 +108,7 @@ public class ScheduledTasks {
     //@Scheduled(fixedRate = 100000)
     @Scheduled(cron="00 10 19 * * MON-FRI")
     public void getRateLog(){
-
+        common.updateWebDriver();
         fileService.deleteFiles(fileService.originPath);
         fileService.deleteFiles(fileService.conditionPath);
         // 종목 시세 period 2: 1day period 3: 1M
